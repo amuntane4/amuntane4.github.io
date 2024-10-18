@@ -1,111 +1,320 @@
 
 <!DOCTYPE html>
-<html lang="ca">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
-    <title>Web d' Ainara</title>
+    <title>Heart, Crescent Moon, and Rainbow Animation</title>
     <style>
-    
-body {
-            padding: 20px; /* Espai extra per als marges laterals */
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background-color: #0d335f;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
         }
-.navbar-brand {
-    display: flex;
-    align-items: center;
-}
-
-.logo {
-    margin-right: 20px; /* Ajusta aquest valor segons el necessari */
-}
-
-.brand-text {
-    white-space: nowrap; /* Això assegura que el text no es trenqui en múltiples línies */
-    font-size: 1.25rem; /* Ajusta la mida de la font si és necessari */
-}  
-.content-container {
-            margin-left: 10px;
-            margin-right: 10px; /* Marges laterals ajustats */
-            margin-top: 20px; /* Afegeix espai superior entre el contingut i la barra de menú */
+        .controls-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+        canvas {
+            border: 2px solid white;
+            max-width: 100%;
+            height: auto;
+        }
+        .plyr, .default-player {
+            margin-top: 20px;
+            width: 100%;
+            max-width: 300px;
+        }
+        .default-player {
+            display: none;
+        }
+        /* Custom CSS for default HTML5 audio player */
+        .default-player audio {
+            width: 100%;
+            background-color: #f1f3f4;
+            border-radius: 4px;
+            padding: 5px;
+        }
+        .default-player audio::-webkit-media-controls-panel {
+            background-color: #f1f3f4;
+        }
+        .default-player audio::-webkit-media-controls-current-time-display,
+        .default-player audio::-webkit-media-controls-time-remaining-display {
+            color: #5f6368;
+        }
+        #audio-upload, #shape-selector {
+            margin: 10px 0;
+            padding: 10px;
+            width: 100%;
+            max-width: 300px;
+        }
+        #song-title {
+            color: white;
+            margin-top: 10px;
+            font-size: 18px;
+            text-align: center;
+            max-width: 300px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        @media (max-width: 768px) {
+            .controls-container {
+                padding: 10px;
+            }
+            canvas {
+                width: 100%;
+                height: auto;
+            }
         }
     </style>
+
+    <!-- Include Plyr CSS -->
+    <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
 </head>
 <body>
+<h2 style="color: white;">Coldplay audio player</h2>
+<div class="controls-container">
+    <input type="file" id="audio-upload" accept="audio/*" />
+    <select id="shape-selector">
+        <option value="heart">Heart</option>
+        <option value="moon">Crescent Moon</option>
+        <option value="rainbow">Rainbow</option>
+    </select>
 
-<!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <div class="container">
-       <a class="navbar-brand d-flex align-items-center" href="#">
-    <img src="https://amuntane4.github.io/logo.png" alt="Logo" width="50" class="logo">
-    <span class="brand-text">Web d'Ainara</span>
-</a>
+    <!-- Display the song title here -->
+    <h2 id="song-title"></h2>
 
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="https://amuntane4.github.io">Inici</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Tema 1</a>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true"
-                        aria-expanded="false">Projectes</a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="https://amuntane4.github.io/aliment">Ecològic?</a>
-                        <a class="dropdown-item" href="https://amuntane4.github.io/coldplay">Coldplay</a>
-                        <a class="dropdown-item" href="#">Projecte 3</a>
-                    </div>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Tema 2</a>
-                </li>
-            </ul>
-        </div>
+    <!-- Audio element for Plyr -->
+    <audio id="player" class="plyr" controls></audio>
+
+    <!-- Default HTML5 audio player -->
+    <div class="default-player">
+        <audio id="default-player" controls></audio>
     </div>
-</nav>
-
-<!-- Contingut principal -->
-<div class="content-container">
-    <h1>Projecte Coldplay.</h1>
-    <p> Fins al dia 15 de novembre estarem fent un projecte que enviarem al grup de música Coldplay. 
-      Aquest enviament serà un  <a href="https://https://es.wikipedia.org/wiki/PechaKucha">PechaKucha</a></p>
-<p>Un PechaKucha és una presentació professional que consta de 20 diapositives que dura 20 segons cadascuna, és a dir,
-  una miqueta més de 6 minuts. Ha de ser molt visual i ha de contenir una mica de codi per explicar el que fem en
-  anglès amb la nostra veu (podem utilitzar intel·ligència artificial i traductor per traduir i per pronunciar, com 
-  Google Translate) </p>
-  <p>El nostre projecte serà un visualitzador d'àudio en temps real per a Coldplay però personalitzat pel nou àlbum del 
-    4 d'octubre de 2024 anomenat Moon Music, per exemple, podem animar una lluna creixent i fer que sigui més gran de
-    mida si el volum augmenta o que sigui més vermella si el so és més agut i que sigui més verda si el so és més greu.
-    A més de la lluna creixent, altres figures podrien ser la lluna decreixent i la lluna completa. Si la cançó és Sky full of stars,
-    s'animaran estrelles i es faran més grans depenent del volum i el color dependrà de si és més greu o més agut. Si és la cançó
-    We pray, posarem el símbol de les mans pregant i es mouran apropant-se i separant-se amb el volum i canviant de color, per exemple,
-    de blanc a negre depenent del so, agut o greu. Els símbols d'infinit i d'un arc de Sant Martí
-    també s'utilitzen. </p>
-  <h2>Com ho farem?</h2>
-  <p>Utilitzarem HTML que és un llenguatge de marques <marca></marca> que, CSS que és un llenguatge d'estils que ens permet jugar 
-    amb el tipus de lletr, marges, colors i el llenguatge més important JAVASCRIPT i dintre de JAVASCRIPT utilitzarem 
-  <a href="https://editor.p5js.org">p5.js</a>. Primer dibuixarem a mà amb un paper milimetrat o una pàgina web creat pel 
-    professor un dibuix que serà relacionat amb Coldplay i que animarem amb música de Coldplay.</p>
-  <p>A continuació veuràs un llistat amb diferents projectes que farem durant el curs:</p>
-  <ul>
-        <li> Aliments ecològics i convencionals amb html en el meu cas he mirat si la coliflor ecològica contenia més nutrients que el convencional.</li>
-        <li> A partir dels logos i dels símbols de l'àlbum de Coldplay farem que canviïn de color i mida i es moguin al ritme de la música, 
-            amb més volum o amb la freqüència. És a dir farem una creació d'obra d'art geomètrica interactiva que reaccioni a la meva veu a través d'un micròfon 
-            i a diferents tecles del teclat, al ratolí, que faci moviments repetitius amb sin i cos, moviments aleatoris amb random... Utilitzarem p5.js.</li>
-        <li> Contaminació atmosfèrica d'una ciutat catalana amb R.</li> 
-    </ul>
 </div>
 
-<!-- Scripts necessaris -->
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.8/umd/popper.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
+<!-- Include Plyr JS -->
+<script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/addons/p5.sound.min.js"></script>
+
+<script>
+let amplitude, fft;
+let song;
+let shapes = [];
+let numShapes = 10;
+let selectedShape = 'heart';
+let player;
+
+function setup() {
+    let canvas = createCanvas(600, 600);
+    canvas.parent(document.body);
+    canvas.style('max-width', '100%');
+    canvas.style('height', 'auto');
+
+    amplitude = new p5.Amplitude();
+    fft = new p5.FFT();
+
+    for (let i = 0; i < numShapes; i++) {
+        let x = random(width);
+        let y = random(height);
+        shapes.push({x: x, y: y});
+    }
+
+    let fileInput = document.getElementById('audio-upload');
+    fileInput.addEventListener('change', handleFileUpload);
+
+    let shapeSelector = document.getElementById('shape-selector');
+    shapeSelector.addEventListener('change', function() {
+        selectedShape = this.value;
+    });
+
+    // Initialize Plyr with fallback
+    try {
+        player = new Plyr('#player');
+    } catch (error) {
+        console.error('Plyr initialization failed:', error);
+        document.querySelector('.plyr').style.display = 'none';
+        document.querySelector('.default-player').style.display = 'block';
+    }
+}
+
+function draw() {
+    background('#0d335f');
+
+    if (!song || !song.isPlaying()) {
+      return;
+    }
+
+    let level = amplitude.getLevel();
+    let size = map(level, 0, 1, 0.5, 1.5); // Escala de la mida de la forma
+
+    let spectrum = fft.analyze();
+    let bass = fft.getEnergy("bass");
+    let treble = fft.getEnergy("treble");
+
+    let r = map(bass, 0, 255, 50, 255);
+    let b = map(treble, 0, 255, 50, 255);
+    let g = map(level, 0, 1, 50, 255);
+
+    noFill();
+    stroke(r, g, b);
+    strokeWeight(3);
+
+    // Dibuixar múltiples formes (cors, llunes o arcs de Sant Martí)
+    shapes.forEach(shape => {
+      push();
+      translate(shape.x, shape.y);
+      scale(size);
+
+      if (selectedShape === 'heart') {
+          drawHeart(); // Dibuixa el cor
+      } else if (selectedShape === 'moon') {
+          drawCrescentMoon(); // Dibuixa la lluna creixent
+      } else if (selectedShape === 'rainbow') {
+          drawRainbow(); // Dibuixa l'arc de Sant Martí
+      }
+
+      pop();
+   });
+}
+
+function drawHeart() {
+  beginShape();// c from coldplay
+vertex(102, 38.1875);
+vertex(97, 40.1875);
+vertex(92, 42.1875);
+vertex(87, 44.1875);
+vertex(82, 47.1875);
+vertex(78, 51.1875);
+vertex(74, 55.1875);
+vertex(71, 59.1875);
+vertex(69, 64.1875);
+vertex(65, 69.1875);
+vertex(63, 75.1875);
+vertex(61, 81.1875);
+vertex(61, 86.1875);
+vertex(62, 93.1875);
+vertex(65, 101.1875);
+vertex(68, 110.1875);
+vertex(71, 113.1875);
+vertex(73, 117.1875);
+vertex(66, 105.1875);
+vertex(76, 121.1875);
+vertex(63, 96.1875);
+vertex(79, 122.1875);
+vertex(83, 125.1875);
+vertex(87, 127.1875);
+vertex(92, 129.1875);
+vertex(96, 131.1875);
+vertex(88, 133.1875);
+vertex(82, 133.1875);
+vertex(75, 130.1875);
+vertex(68, 129.1875);
+vertex(63, 126.1875);
+vertex(59, 123.1875);
+vertex(55, 118.1875);
+vertex(51, 115.1875);
+vertex(47, 108.1875);
+vertex(45, 103.1875);
+vertex(43, 98.1875);
+vertex(41, 91.1875);
+vertex(41, 85.1875);
+vertex(41, 80.1875);
+vertex(42, 75.1875);
+vertex(44, 71.1875);
+vertex(45, 66.1875);
+vertex(48, 61.1875);
+vertex(51, 55.1875);
+vertex(53, 55.1875);
+vertex(54, 53.1875);
+vertex(56, 51.1875);
+vertex(60, 46.1875);
+vertex(65, 45.1875);
+vertex(69, 42.1875);
+vertex(73, 39.1875);
+vertex(77, 38.1875);
+vertex(83, 37.1875);
+vertex(88, 37.1875);
+vertex(93, 36.1875);
+vertex(97, 34.1875);
+vertex(98, 37.1875);
+endShape(CLOSE);
+}
+
+function drawCrescentMoon() {
+   // Dibuix de la lluna creixent
+   fill(0);
+   ellipse(0, 0, 50, 100); // Lluna plena
+   fill('#0d335f');
+   ellipse(10, 0, 50, 100); // Ombra per crear la creixent
+}
+
+function drawRainbow() {
+   // Dibuix d'un arc de Sant Martí
+   let radius = 50;
+   let colors = ['#FF0000', '#FF7F00', '#FFFF00', '#00FF00', '#0000FF', '#4B0082', '#8B00FF']; // Colors de l'arc de Sant Martí
+
+   for (let i = 0; i < colors.length; i++) {
+       stroke(colors[i]);
+       noFill();
+       arc(0, 0, radius + i * 10, radius + i * 10, PI, TWO_PI); // Dibuixar arcs concèntrics amb diferents colors
+   }
+}
+
+function handleFileUpload(event) {
+   let file = event.target.files[0];
+   if (file && file.type.startsWith('audio/')) {
+       let fileURL = URL.createObjectURL(file);
+
+       // Update audio player with the new audio file
+       const audioElement = document.getElementById('player');
+       const defaultAudioElement = document.getElementById('default-player');
+       audioElement.src = fileURL;
+       defaultAudioElement.src = fileURL;
+
+       if (player) {
+           player.source = {
+               type: 'audio',
+               sources: [{ src: fileURL, type: file.type }]
+           };
+       }
+
+       // Update song title
+       const songTitleElement = document.getElementById('song-title');
+       songTitleElement.textContent = file.name;
+
+       // Load sound for p5.js analysis
+       loadSound(fileURL, soundLoaded);
+   } else {
+       console.error('Please upload a valid audio file');
+   }
+}
+
+function soundLoaded(loadedSong) {
+   if (song && song.isPlaying()) {
+       song.stop();
+   }
+   song = loadedSong;
+   song.play();
+   amplitude.setInput(song);
+   fft.setInput(song);
+}
+</script>
 
 </body>
 </html>
